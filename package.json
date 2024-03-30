@@ -1,13 +1,14 @@
 {
 	"name": "baramulla",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Workflow coordinator",
-	"main": "dist/entrypoint.js",
+	"main": "dist/types/index.js",
+	"types": "dist/types/index.d.ts",
 	"scripts": {
 		"clean": "rm -rf ./dist",
 		"start": "node dist/entrypoint.js",
 		"dev": "NODE_ENV=development nodemon --exec ts-node entrypoint.ts",
-		"build": "tsc",
+		"build": "npm run clean && npx tsc",
 		"test": "jest"
 	},
 	"author": "Prasad Vaidya",
