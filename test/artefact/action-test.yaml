@@ -1,0 +1,13 @@
+version: 1.0
+kind: test-action
+
+workflow:
+  - name: step-1
+    desc: First job of the workflow
+    actions:
+      - type: TestAction
+        desc: Test Action
+        params:
+          - test_param: 100
+        output:
+          - test_output_param
