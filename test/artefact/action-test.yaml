@@ -8,6 +8,15 @@ workflow:
       - type: TestAction
         desc: Test Action
         params:
-          - test_param: 100
+          - test_param_1: 100
         output:
-          - test_output_param
+          - test_output_param_1
+  - name: step-2
+    desc: Second job of the workflow
+    actions:
+      - type: TestAction
+        desc: Test Action
+        params:
+          - test_param_2: 101
+        output:
+          - test_output_param_2
