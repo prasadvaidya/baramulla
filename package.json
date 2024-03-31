@@ -4,6 +4,7 @@
 	"description": "Workflow coordinator",
 	"main": "dist/types/index.js",
 	"types": "dist/types/index.d.ts",
+	"release": { "branches": [ "main" ] },
 	"scripts": {
 		"clean": "rm -rf ./dist",
 		"start": "node dist/entrypoint.js",
