@@ -5,6 +5,7 @@ import { IAction } from '../action/IAction';
 
 export interface IJobResult {
 	success: boolean;
+	outputMessages: IProducer<IMessage>[];
 }
 
 export interface IOrchestratorContext<T, U> {
@@ -19,7 +20,7 @@ export interface IJobContext {
 export interface IJob<T extends IMessage, U extends IMessage> {
 	name: string;
 	dependsOn?: string[];
-	dependencies?: IJob<T, U>[];
+	dependencies?: string[];
 	actions: IAction[];
 	context: IJobContext;
 	inputMessage?: IConsumer<T>;

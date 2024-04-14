@@ -33,7 +33,7 @@ describe('Test Job class', () => {
 		const onStartCallback = () => {};
 		const onCompleteCallback = (producerMessage: IProducer<IMessage> | undefined) => {};
 
-		const job = new Job(parsedDoc.workflow[0], consumerContext);
+		const job = new Job(parsedDoc.workflow[0], consumerContext, []);
 
 		const initJobSpy = jest.spyOn(job, 'initJob');
 
