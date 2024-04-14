@@ -1,15 +1,20 @@
 import { IContext } from '../../../../entrypoint';
 import { IMessage } from '../../../broker/interface/IMessage';
-import { IContainer, IContainerResult } from '../../interface/container/IContainer';
+import { IContainer } from '../../interface/container/IContainer';
 import { IJob, IJobContext } from '../../interface/job/IJob';
 import { Job } from '../job/Job';
 
-interface IJobDependencies<T extends IMessage, U extends IMessage> {
+interface IJobDependencies {
+	[key: string]: string[];
+}
+
+interface IJobBundle<T extends IMessage, U extends IMessage> {
 	dependencies: string[];
 	jobInstance: IJob<T, U>;
 }
+
 export interface IJobs<T extends IMessage, U extends IMessage> {
-	[key: string]: IJobDependencies<T, U>;
+	[key: string]: IJobBundle<T, U>;
 }
 
 export class Container<T extends IMessage, U extends IMessage> implements IContainer<T, U> {
@@ -29,15 +34,22 @@ export class Container<T extends IMessage, U extends IMessage> implements IConta
 	initContainer(): IJobs<T, U> {
 		const jobs: IJobs<T, U> = this.jobs;
 
+		const jobDependenciesObj: IJobDependencies = {};
+
 		for (let job of this.workflow) {
-			jobs[job.name] = {
-				dependencies: [],
-				jobInstance: new Job(job, this.consumerContext)
-			};
+			job?.dependsOn?.forEach((dependency) => {
+				if (jobDependenciesObj[dependency]) jobDependenciesObj[dependency].push(job.name);
+				else jobDependenciesObj[dependency] = [job.name];
+			});
 		}
 
 		for (let job of this.workflow) {
-			job.dependsOn?.map((dependency) => jobs[dependency].dependencies.push(job.name));
+			const jobDependencies = jobDependenciesObj[job.name] || [];
+
+			jobs[job.name] = {
+				dependencies: jobDependencies,
+				jobInstance: new Job(job, this.consumerContext, jobDependencies)
+			};
 		}
 		return jobs;
 	}

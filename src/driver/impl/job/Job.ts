@@ -11,17 +11,18 @@ export class JobContext implements IJobContext {
 export class Job<T extends IMessage, U extends IMessage> implements IJob<T, U> {
 	name: string;
 	dependsOn?: string[];
-	dependencies?: IJob<T, U>[] | undefined;
+	dependencies: string[];
 	actions: IAction[];
 	context: IJobContext = new JobContext();
 	consumerContext: IContext;
 	inputMessage?: IConsumer<T>;
 	outputMessage?: IProducer<U> | undefined;
 
-	constructor(job: IJob<T, U>, consumerContext: IContext) {
+	constructor(job: IJob<T, U>, consumerContext: IContext, dependencies: string[]) {
 		const { name, dependsOn, actions } = job;
 		this.name = name;
 		this.dependsOn = dependsOn;
+		this.dependencies = dependencies;
 		this.actions = actions;
 		this.consumerContext = consumerContext;
 	}
@@ -45,12 +46,24 @@ export class Job<T extends IMessage, U extends IMessage> implements IJob<T, U> {
 
 		// TODO: build 'outputMessage' based on granular actions
 
-		// TODO: callback could be async
-		onCompleteCallback(this.outputMessage);
+		const outputMessages: IProducer<U>[] = [];
+		for (let dependency of this.dependencies) {
+			const message = {
+				body: {
+					sourceJob: this.name,
+					targetJob: dependency,
+					createdAt: new Date()
+				}
+			} as IProducer<U>;
+			outputMessages.push(message);
+			// TODO: callback could be async
+			onCompleteCallback(message);
+		}
 
 		return new Promise((resolve, reject) => {
 			resolve({
-				success: true
+				success: true,
+				outputMessages
 			});
 		});
 	}
