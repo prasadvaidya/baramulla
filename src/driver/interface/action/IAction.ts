@@ -1,7 +1,5 @@
 import { IJobContext } from '../job/IJob';
 
-const pattern = /\${(.*?)}/g;
-
 export interface IActionClasses {
 	[key: string]: any;
 }

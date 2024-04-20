@@ -5,8 +5,6 @@ import { IJobContext } from '../../interface/job/IJob';
 
 dotenv.config();
 
-const pattern = /\${(.*?)}/g;
-
 export class Action implements IAction {
 	type: string;
 	desc: string;
