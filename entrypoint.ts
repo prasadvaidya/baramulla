@@ -7,11 +7,10 @@ export interface IContext {
 	actionClasses: IActionClasses;
 }
 
-export const entryPoint = (context: IContext) => {
+export const entryPoint = (context: IContext, filePath: string) => {
 	logger.debug('Workflow started');
 	try {
-		// TODO: Load yaml files dynamically
-		const doc = yaml.load('<PATH/TO/YAML>');
+		const doc = yaml.load(filePath);
 
 		const container = new Container(doc, context);
 		container.initContainer();
